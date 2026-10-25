@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Dota 2 Streak Flame Skins Simulator</title>
+  <style>
+    :root {
+      --bg-dark: #0f0f12;
+      --card-bg: #181920;
+      --accent: #fe2c55;
+      --accent-cyan: #25f4ee;
+      --text-main: #ffffff;
+      --text-dim: #8b8d99;
+      --border: #272935;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent), #ff7b54, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    header p { color: var(--text-dim); font-size: 14px; }
+
+    .main-layout {
+      display: flex;
+      gap: 28px;
+      width: 100%;
+      max-width: 1100px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Phone Mockup */
+    .phone-container {
+      width: 360px;
+      height: 640px;
+      background: #000000;
+      border-radius: 40px;
+      border: 8px solid #282933;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(254,44,85,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #121217;
+      border-bottom: 1px solid #1f202a;
+    }
+    .back-btn { font-size: 20px; color: #fff; cursor: pointer; }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fe2c55, #6c5ce7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .user-info { flex: 1; }
+    .user-name { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .user-status { font-size: 11px; color: #00e676; }
+
+    /* Streak Badge in Chat */
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.08);
+      padding: 2px 8px 2px 4px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.3s ease;
+    }
+    .streak-badge.epic {
+      background: linear-gradient(90deg, rgba(255,165,0,0.25), rgba(254,44,85,0.25));
+      border: 1px solid rgba(255,215,0,0.6);
+      box-shadow: 0 0 15px rgba(255,165,0,0.4);
+      animation: pulseGlow 1.8s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      from { transform: scale(1); filter: brightness(1); }
+      to { transform: scale(1.04); filter: brightness(1.2); }
+    }
+    .streak-img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .streak-count {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ff9f43;
+    }
+    .streak-badge.epic .streak-count {
+      color: #ffd700;
+      text-shadow: 0 0 8px rgba(255,215,0,0.8);
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #09090c;
+    }
+    .chat-msg {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .chat-msg.them {
+      background: #1b1c24;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-msg.me {
+      background: #fe2c55;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .streak-notice {
+      align-self: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px 18px;
+      text-align: center;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+    .streak-hero-preview {
+      width: 90px;
+      height: 90px;
+      margin: 8px auto;
+      display: block;
+      border-radius: 18px;
+      object-fit: cover;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      transition: all 0.3s;
+    }
+
+    /* Control Panel */
+    .controls {
+      flex: 1;
+      min-width: 320px;
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Hero Selector Grid */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 10px;
+    }
+    .hero-btn {
+      background: #20222e;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hero-btn:hover { background: #2a2d3d; }
+    .hero-btn.active {
+      border-color: var(--accent);
+      background: #2d1822;
+      transform: translateY(-2px);
+    }
+    .hero-btn img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .hero-btn span {
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      max-width: 65px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Slider */
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .slider-labels b { color: #ffd700; font-size: 16px; }
+    input[type=range] {
+      width: 100%;
+      height: 8px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Stages Row */
+    .stages-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .stage-item {
+      background: #111218;
+      border: 1px solid #232530;
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .stage-item.current {
+      border-color: #ffd700;
+      background: rgba(255,215,0,0.08);
+      transform: scale(1.05);
+    }
+    .stage-item img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .stage-name { font-size: 11px; font-weight: 700; }
+    .stage-days { font-size: 10px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>TikTok Dota 2 Streak Flame Simulator</h1>
+    <p>Интерактивный симулятор кастомных скинов огоньков для чата TikTok</p>
+  </header>
+
+  <div class="main-layout">
+    <!-- Phone Mockup -->
+    <div class="phone-container">
+      <div class="phone-header">
+        <div class="back-btn">&#8592;</div>
+        <div class="avatar">D2</div>
+        <div class="user-info">
+          <div class="user-name">
+            Dota2 Partner
+            <div id="phoneStreakBadge" class="streak-badge">
+              <img id="badgeImg" class="streak-img" src="../stages/cm/stage_3_50days.png" alt="Streak">
+              <span id="badgeCount" class="streak-count">54</span>
+            </div>
+          </div>
+          <div class="user-status">В сети</div>
+        </div>
+      </div>
+
+      <div class="chat-body">
+        <div class="chat-msg them">Привет! У нас сегодня новый рекорд по дням огонька 🔥</div>
+        <div class="chat-msg me">Да! Зацени новый скин огонька, который я переключил!</div>
+        
+        <div class="streak-notice">
+          <div>Стадия огонька: <b id="currentStageText" style="color: #ffd700;">Стадия 3 (Зрелое пламя)</b></div>
+          <img id="bigHeroImg" class="streak-hero-preview" src="../stages/cm/stage_3_50days.png" alt="Big Hero">
+          <div id="noticeHeroName" style="font-weight: 700; font-size: 13px;">Crystal Maiden</div>
+          <div style="font-size: 11px; color: #aaa; margin-top: 4px;">Стрик продолжается: <span id="noticeDays">54</span> дн.</div>
+        </div>
+
+        <div class="chat-msg them">Вау, выглядит эпично! Чиби маскот идеально вписался в чат! 😍</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <!-- Hero Picker -->
+      <div class="card">
+        <h3> Выбери персонажа Dota 2 (<span id="heroesCount">12</span> готово)</h3>
+        <div class="hero-grid" id="heroGrid"></div>
+      </div>
+
+      <!-- Streak Days Slider -->
+      <div class="card">
+        <h3> Прогрессия огонька (Дни стрика)</h3>
+        <div class="slider-container">
+          <div class="slider-labels">
+            <span>Стрик: <b id="sliderVal">54 дня</b></span>
+            <span id="stageLabel" style="color: #fe2c55; font-weight: bold;">Стадия 3 (30-99 дн.)</span>
+          </div>
+          <input type="range" id="daysSlider" min="1" max="250" value="54">
+        </div>
+
+        <div class="stages-row" id="stagesRow">
+          <div class="stage-item" id="cardStage1">
+            <img id="thumbStage1" src="" alt="S1">
+            <div class="stage-name">Искра</div>
+            <div class="stage-days">1-7 дн.</div>
+          </div>
+          <div class="stage-item" id="cardStage2">
+            <img id="thumbStage2" src="" alt="S2">
+            <div class="stage-name">Рост</div>
+            <div class="stage-days">8-29 дн.</div>
+          </div>
+          <div class="stage-item current" id="cardStage3">
+            <img id="thumbStage3" src="" alt="S3">
+            <div class="stage-name">Пламя</div>
+            <div class="stage-days">30-99 дн.</div>
+          </div>
+          <div class="stage-item" id="cardStage4">
+            <img id="thumbStage4" src="" alt="S4">
+            <div class="stage-name">Эпик</div>
+            <div class="stage-days">100+ дн.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const heroes = [
+      { id: 'cm', name: 'Crystal Maiden', icon: '../skins/cm_flame_concept.jpg' },
+      { id: 'lina', name: 'Lina', icon: '../skins/lina_flame_concept.jpg' },
+      { id: 'qop', name: 'Queen of Pain', icon: '../skins/qop_flame_concept.jpg' },
+      { id: 'luna', name: 'Luna', icon: '../skins/luna_flame_concept.jpg' },
+      { id: 'mirana', name: 'Mirana', icon: '../skins/mirana_flame_concept.jpg' },
+      { id: 'vengeful', name: 'Vengeful', icon: '../skins/vengeful_flame_concept.jpg' },
+      { id: 'sf', name: 'Shadow Fiend', icon: '../skins/sf_flame_concept.jpg' },
+      { id: 'necro', name: 'Necrophos', icon: '../skins/necro_flame_concept.jpg' },
+      { id: 'weaver', name: 'Weaver', icon: '../skins/weaver_flame_concept.jpg' },
+      { id: 'ogre', name: 'Ogre Magi', icon: '../skins/ogre_flame_concept.jpg' },
+      { id: 'huskar', name: 'Huskar', icon: '../skins/huskar_flame_concept.jpg' },
+      { id: 'invoker', name: 'Invoker', icon: '../skins/invoker_flame_concept.jpg' }
+    ];
+
+    let currentHero = heroes[0];
+    let currentDays = 54;
+
+    const heroGrid = document.getElementById('heroGrid');
+    const daysSlider = document.getElementById('daysSlider');
+    const sliderVal = document.getElementById('sliderVal');
+    const stageLabel = document.getElementById('stageLabel');
+    const badgeImg = document.getElementById('badgeImg');
+    const badgeCount = document.getElementById('badgeCount');
+    const phoneStreakBadge = document.getElementById('phoneStreakBadge');
+    const bigHeroImg = document.getElementById('bigHeroImg');
+    const noticeHeroName = document.getElementById('noticeHeroName');
+    const noticeDays = document.getElementById('noticeDays');
+    const currentStageText = document.getElementById('currentStageText');
+
+    function renderHeroes() {
+      heroGrid.innerHTML = '';
+      heroes.forEach(h => {
+        const btn = document.createElement('div');
+        btn.className = 'hero-btn' + (h.id === currentHero.id ? ' active' : '');
+        btn.innerHTML = `<img src="${h.icon}" alt="${h.name}"><span>${h.name}</span>`;
+        btn.onclick = () => {
+          currentHero = h;
+          document.querySelectorAll('.hero-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          updateView();
+        };
+        heroGrid.appendChild(btn);
+      });
+    }
+
+    function getStageInfo(days) {
+      if (days < 8) return { num: 1, file: 'stage_1_3days.png', title: 'Стадия 1 (Искра)', label: '1-7 дн.' };
+      if (days < 30) return { num: 2, file: 'stage_2_10days.png', title: 'Стадия 2 (Растущее пламя)', label: '8-29 дн.' };
+      if (days < 100) return { num: 3, file: 'stage_3_50days.png', title: 'Стадия 3 (Зрелое пламя)', label: '30-99 дн.' };
+      return { num: 4, file: 'stage_4_100days.png', title: 'Стадия 4 (Эпическое сияние)', label: '100+ дн.' };
+    }
+
+    function updateView() {
+      const stage = getStageInfo(currentDays);
+      const stagePath = `../stages/${currentHero.id}/${stage.file}`;
+
+      sliderVal.innerText = `${currentDays} дн.`;
+      stageLabel.innerText = stage.title;
+      currentStageText.innerText = stage.title;
+      badgeCount.innerText = currentDays;
+      noticeDays.innerText = currentDays;
+      noticeHeroName.innerText = currentHero.name;
+
+      badgeImg.src = stagePath;
+      bigHeroImg.src = stagePath;
+
+      if (stage.num === 4) {
+        phoneStreakBadge.classList.add('epic');
+      } else {
+        phoneStreakBadge.classList.remove('epic');
+      }
+
+      // Update thumbnails
+      document.getElementById('thumbStage1').src = `../stages/${currentHero.id}/stage_1_3days.png`;
+      document.getElementById('thumbStage2').src = `../stages/${currentHero.id}/stage_2_10days.png`;
+      document.getElementById('thumbStage3').src = `../stages/${currentHero.id}/stage_3_50days.png`;
+      document.getElementById('thumbStage4').src = `../stages/${currentHero.id}/stage_4_100days.png`;
+
+      // Update active card
+      for (let i = 1; i <= 4; i++) {
+        const card = document.getElementById(`cardStage${i}`);
+        if (i === stage.num) card.classList.add('current');
+        else card.classList.remove('current');
+      }
+    }
+
+    daysSlider.addEventListener('input', (e) => {
+      currentDays = parseInt(e.target.value);
+      updateView();
+    });
+
+    renderHeroes();
+    updateView();
+  </script>
+</body>
+</html>
