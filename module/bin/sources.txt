@@ -1,0 +1,10 @@
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/com/dota/tiktokskins/DotaSkinManager.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/com/dota/tiktokskins/MainActivity.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/com/dota/tiktokskins/MainHook.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/com/dota/tiktokskins/SkinPickerDialog.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/de/robv/android/xposed/IXposedHookLoadPackage.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/de/robv/android/xposed/XC_MethodHook.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/de/robv/android/xposed/XposedBridge.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/de/robv/android/xposed/XposedHelpers.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/src/main/java/de/robv/android/xposed/callbacks/XC_LoadPackage.java
+C:/Users/XDsir/.gemini/antigravity/scratch/tiktok_dota_skins/module/bin/gen/com/dota/tiktokskins/R.java
